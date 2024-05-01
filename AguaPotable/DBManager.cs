@@ -107,7 +107,7 @@ namespace AguaPotable
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    string query = "SELECT Mes, Anio, Monto, Mora, FechaPago, Nombre, Direccion, Canton, Telefono, Cuota FROM Pagos  INNER JOIN Clientes ON Pagos.ClienteID = Clientes.ClienteID WHERE CAST(FechaPago AS DATE) = CAST(GETDATE() AS DATE) and Pagos.ClienteID = @ClienteID";
+                    string query = "SELECT Mes, Anio, Monto, Mora, FechaPago, Nombre, Direccion, Canton, Telefono, (select sum(Monto) from Pagos where Pagos.ClienteID = Clientes.ClienteID) as Cuota FROM Pagos  INNER JOIN Clientes ON Pagos.ClienteID = Clientes.ClienteID WHERE CAST(FechaPago AS DATE) = CAST(GETDATE() AS DATE) and Pagos.ClienteID = @ClienteID";
 
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
