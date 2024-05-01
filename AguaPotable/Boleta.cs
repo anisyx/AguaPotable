@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Data.SqlClient;
 
 namespace AguaPotable
 {
@@ -15,6 +16,25 @@ namespace AguaPotable
         public Boleta()
         {
             InitializeComponent();
+        }
+
+        ReporteBoleta repo = new ReporteBoleta();
+
+        [Obsolete]
+        private void  Boleta_Load(object sender, EventArgs e)
+        {
+            try
+            {
+                DataTable pagosCliente = DBManager.ObtenerPagosClienteImprimir(Form1.clienteId);
+                repo = new ReporteBoleta();
+                repo.DataSource = pagosCliente;
+                reportViewer1.Report = repo;
+                reportViewer1.RefreshReport();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al generar la boleta: " + ex.Message);
+            }
         }
     }
 }

@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using iText.StyledXmlParser.Jsoup.Select;
+using System.Data.SqlClient;
 
 namespace AguaPotable
 {
@@ -17,43 +12,44 @@ namespace AguaPotable
         {
             DataTable dataTable = new DataTable();
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            try
             {
-                string query = "SELECT * FROM Clientes WHERE Nombre LIKE @SearchTerm";
-
-                using (SqlCommand command = new SqlCommand(query, connection))
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    command.Parameters.AddWithValue("@SearchTerm", "%" + searchTerm + "%");
+                    string query = "SELECT * FROM Clientes WHERE Nombre LIKE @SearchTerm";
 
-                    try
+                    using (SqlCommand command = new SqlCommand(query, connection))
                     {
+                        command.Parameters.AddWithValue("@SearchTerm", "%" + searchTerm + "%");
+
                         connection.Open();
                         using (SqlDataAdapter adapter = new SqlDataAdapter(command))
                         {
                             adapter.Fill(dataTable);
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        // Manejar la excepción o relanzarla según sea necesario
-                        throw ex;
-                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                // Manejar la excepción o relanzarla según sea necesario
+                throw new Exception("Error al buscar cliente en la base de datos: " + ex.Message);
             }
 
             return dataTable;
         }
+
         public static DataTable ObtenerTodosLosClientes()
         {
             DataTable dataTable = new DataTable();
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            try
             {
-                string query = "SELECT * FROM Clientes";
-
-                using (SqlCommand command = new SqlCommand(query, connection))
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    try
+                    string query = "SELECT * FROM Clientes";
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         connection.Open();
                         using (SqlDataAdapter adapter = new SqlDataAdapter(command))
@@ -61,42 +57,43 @@ namespace AguaPotable
                             adapter.Fill(dataTable);
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        // Manejar la excepción o relanzarla según sea necesario
-                        throw ex;
-                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                // Manejar la excepción o relanzarla según sea necesario
+                throw new Exception("Error al obtener todos los clientes: " + ex.Message);
             }
 
             return dataTable;
         }
+
         public static DataTable ObtenerPagosCliente(int clienteId)
         {
             DataTable dataTable = new DataTable();
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            try
             {
-                string query = "SELECT Mes, Anio FROM Pagos WHERE ClienteID = @ClienteID";
-
-                using (SqlCommand command = new SqlCommand(query, connection))
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    command.Parameters.AddWithValue("@ClienteID", clienteId);
+                    string query = "SELECT Mes, Anio FROM Pagos WHERE ClienteID = @ClienteID";
 
-                    try
+                    using (SqlCommand command = new SqlCommand(query, connection))
                     {
+                        command.Parameters.AddWithValue("@ClienteID", clienteId);
+
                         connection.Open();
                         using (SqlDataAdapter adapter = new SqlDataAdapter(command))
                         {
                             adapter.Fill(dataTable);
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        // Manejar la excepción o relanzarla según sea necesario
-                        throw ex;
-                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                // Manejar la excepción o relanzarla según sea necesario
+                throw new Exception("Error al obtener pagos del cliente: " + ex.Message);
             }
 
             return dataTable;
@@ -106,57 +103,58 @@ namespace AguaPotable
         {
             DataTable dataTable = new DataTable();
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            try
             {
-                string query = "SELECT * FROM Pagos WHERE CAST(FechaPago AS DATE) = CAST(GETDATE() AS DATE) and ClienteID = @ClienteID";
-
-                using (SqlCommand command = new SqlCommand(query, connection))
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    command.Parameters.AddWithValue("@ClienteID", clienteId);
+                    string query = "SELECT Mes, Anio, Monto, Mora, FechaPago, Nombre, Direccion, Canton, Telefono, Cuota FROM Pagos  INNER JOIN Clientes ON Pagos.ClienteID = Clientes.ClienteID WHERE CAST(FechaPago AS DATE) = CAST(GETDATE() AS DATE) and Pagos.ClienteID = @ClienteID";
 
-                    try
+                    using (SqlCommand command = new SqlCommand(query, connection))
                     {
+                        command.Parameters.AddWithValue("@ClienteID", clienteId);
+
                         connection.Open();
                         using (SqlDataAdapter adapter = new SqlDataAdapter(command))
                         {
                             adapter.Fill(dataTable);
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        // Manejar la excepción o relanzarla según sea necesario
-                        throw ex;
+                        connection.Close();
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                // Manejar la excepción o relanzarla según sea necesario
+                throw new Exception("Error al obtener pagos para imprimir: " + ex.Message);
             }
 
             return dataTable;
         }
+
         public static void GuardarPago(int IdCliente, int mes, int anio, decimal monto, decimal mora, DateTime fechaPago)
         {
             string query = "INSERT INTO Pagos (ClienteID, Mes, Anio, Monto, Mora, FechaPago) VALUES (@ClienteID, @Mes, @Anio, @Monto, @Mora, @FechaPago)";
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            try
             {
-                SqlCommand command = new SqlCommand(query, connection);
-                command.Parameters.AddWithValue("@ClienteID", IdCliente);
-                command.Parameters.AddWithValue("@Mes", mes);
-                command.Parameters.AddWithValue("@Anio", anio);
-                command.Parameters.AddWithValue("@Monto", monto);
-                command.Parameters.AddWithValue("@Mora", mora);
-                command.Parameters.AddWithValue("@FechaPago", fechaPago);
-
-                try
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
+                    SqlCommand command = new SqlCommand(query, connection);
+                    command.Parameters.AddWithValue("@ClienteID", IdCliente);
+                    command.Parameters.AddWithValue("@Mes", mes);
+                    command.Parameters.AddWithValue("@Anio", anio);
+                    command.Parameters.AddWithValue("@Monto", monto);
+                    command.Parameters.AddWithValue("@Mora", mora);
+                    command.Parameters.AddWithValue("@FechaPago", fechaPago);
+
                     connection.Open();
                     command.ExecuteNonQuery();
                 }
-                catch (Exception ex)
-                {
-                    throw new Exception("Error al guardar el pago en la base de datos: " + ex.Message);
-                }
             }
-
+            catch (Exception ex)
+            {
+                throw new Exception("Error al guardar el pago en la base de datos: " + ex.Message);
+            }
         }
 
         public static void EliminarPago(int clienteId, int mes, int anio)
@@ -242,4 +240,3 @@ namespace AguaPotable
         }
     }
 }
-
