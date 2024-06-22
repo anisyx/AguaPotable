@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Data;
 using System.Windows.Forms;
 
@@ -11,6 +12,9 @@ namespace AguaPotable
         {
             InitializeComponent();
             MostrarTodosLosClientes();
+            button3.Enabled = false;
+            textBox2.Enabled = false;
+            label1.Enabled = false;
         }
 
         private void MostrarTodosLosClientes()
@@ -26,32 +30,20 @@ namespace AguaPotable
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            string searchTerm = textBox1.Text.Trim();
-            if (!string.IsNullOrEmpty(searchTerm))
-            {
-                BuscarCliente(searchTerm);
-            }
-            else
-            {
-                MessageBox.Show("Por favor, ingrese un término de búsqueda.");
-            }
-        }
+        //private void button1_Click(object sender, EventArgs e)
+        //{
+        //    string searchTerm = textBox1.Text.Trim();
+        //    if (!string.IsNullOrEmpty(searchTerm))
+        //    {
+        //        BuscarCliente(searchTerm);
+        //    }
+        //    else
+        //    {
+        //        MessageBox.Show("Por favor, ingrese un término de búsqueda.");
+        //    }
+        //}
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-            string searchTerm = textBox1.Text.Trim();
-            if (string.IsNullOrEmpty(searchTerm))
-            {
-                MostrarTodosLosClientes();
-            }
-            else
-            {
-                BuscarCliente(searchTerm);
-            }
-        }
-
+     
         private void BuscarCliente(string searchTerm)
         {
             try
@@ -79,8 +71,8 @@ namespace AguaPotable
                 {
                     try
                     {
-                        decimal monto = 50; // Obtener el monto del pago
-                        decimal mora = 0; // Obtener la mora por mes (debes implementar este método)
+                        decimal monto = DBManager.ObtenerCuotaCliente(clienteId); // Obtener el monto del pago
+                        decimal mora = Int64.Parse(textBox2.Text); // Obtener la mora por mes (debes implementar este método)
                         DBManager.GuardarPago(clienteId, mes, anio, monto, mora, DateTime.Today);
                         MessageBox.Show("Pago registrado correctamente.");
                     }
@@ -210,5 +202,81 @@ namespace AguaPotable
             int anioActual = DateTime.Now.Year;
             lblanio.Text = anioActual.ToString();
         }
+
+       
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            int anio = 2024; // Año correspondiente a los CheckBox
+            int clienteId = ObtenerClienteIdSeleccionado();
+
+            if (clienteId != -1)
+            {
+                try
+                {
+                    decimal monto = DBManager.ObtenerCuotaCliente(clienteId); // Obtener el monto del pago
+                    decimal mora = Int64.Parse(textBox2.Text); // Obtener la mora por mes (debes implementar este método)
+                    DBManager.GuardarPago(clienteId, 0, anio, 0, mora, DateTime.Today);
+                    MessageBox.Show("Mora registrada correctamente.");
+                    button3.Enabled = false;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error al guardar la mora: " + ex.Message);
+                    button3.Enabled = true;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Por favor, seleccione un cliente antes de marcar la mora.");
+                button3.Enabled = true;
+            }
+        }
+
+        private void checkBox13_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox checkBox = (CheckBox)sender;
+            if (checkBox13.Checked == true)
+            {
+
+                button3.Enabled = true;
+                textBox2.Enabled = true; 
+                label1.Enabled = true;
+            }
+            else
+            {
+                button3.Enabled = false;
+                textBox2.Enabled = false;
+                label1.Enabled = false;
+
+            }
+        }
+
+    
+
+        private void button4_Click_1(object sender, EventArgs e)
+        {
+            Usuario formularioUsuario = new Usuario();
+            formularioUsuario.ShowDialog();
+        }
+
+        private void textBox3_TextChanged(object sender, EventArgs e)
+        {
+            DataTable dtClientes = DBManager.ObtenerClientes();
+            DataView dvClientes = dtClientes.DefaultView;
+            dvClientes.RowFilter = string.Format("Nombre LIKE '%{0}%' OR Direccion LIKE '%{0}%' OR Canton LIKE '%{0}%'", textBox3.Text);
+            dataGridViewClientes.DataSource = dvClientes;
+
+            string searchTerm = textBox3.Text.Trim();
+            if (string.IsNullOrEmpty(searchTerm))
+            {
+                MostrarTodosLosClientes();
+            }
+            else
+            {
+                BuscarCliente(searchTerm);
+            }
+        }
     }
 }
+

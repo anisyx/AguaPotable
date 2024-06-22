@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="_UpgradeWizard_Files\UpgradeWizardLog.xslt"?>
+<log>
+  <event>Get project references.</event>
+  <event action="Analyze" type="Success" name="Assembly References" path="C:\Users\ronal\Source\Repos\AguaPotable\AguaPotable\AguaPotable.csproj" />
+  <event action="Analyze" type="Success" name="Assembly References" path="C:\Users\ronal\Source\Repos\AguaPotable\AguaPotable\App.config" />
+  <event action="Analyze" type="Success" name="Http Handlers" path="C:\Users\ronal\Source\Repos\AguaPotable\AguaPotable\App.config" />
+  <event action="Analyze" type="Success" name="Handlers (IIS7+)" path="C:\Users\ronal\Source\Repos\AguaPotable\AguaPotable\App.config" />
+  <event action="Analyze" type="Success" name="Config Sections" path="C:\Users\ronal\Source\Repos\AguaPotable\AguaPotable\App.config" />
+  <event action="Analyze" type="Success" name="Render Extensions" path="C:\Users\ronal\Source\Repos\AguaPotable\AguaPotable\App.config" />
+  <event action="Analyze" type="Success" name="Session State Providers" path="C:\Users\ronal\Source\Repos\AguaPotable\AguaPotable\App.config" />
+  <event action="Analyze" type="Success" name="App.config" path="C:\Users\ronal\Source\Repos\AguaPotable\AguaPotable\App.config" />
+  <event action="Analyze" type="Success" name="Boleta.resx" path="C:\Users\ronal\Source\Repos\AguaPotable\AguaPotable\Boleta.resx" />
+  <event action="Analyze" type="Success" name="Form1.resx" path="C:\Users\ronal\Source\Repos\AguaPotable\AguaPotable\Form1.resx" />
+  <event action="Analyze" type="Success" name="Assembly References" path="C:\Users\ronal\Source\Repos\AguaPotable\AguaPotable\packages.config" />
+  <event action="Analyze" type="Success" name="Http Handlers" path="C:\Users\ronal\Source\Repos\AguaPotable\AguaPotable\packages.config" />
+  <event action="Analyze" type="Success" name="Handlers (IIS7+)" path="C:\Users\ronal\Source\Repos\AguaPotable\AguaPotable\packages.config" />
+  <event action="Analyze" type="Success" name="Config Sections" path="C:\Users\ronal\Source\Repos\AguaPotable\AguaPotable\packages.config" />
+  <event action="Analyze" type="Success" name="Render Extensions" path="C:\Users\ronal\Source\Repos\AguaPotable\AguaPotable\packages.config" />
+  <event action="Analyze" type="Success" name="Session State Providers" path="C:\Users\ronal\Source\Repos\AguaPotable\AguaPotable\packages.config" />
+  <event action="Analyze" type="Success" name="packages.config" path="C:\Users\ronal\Source\Repos\AguaPotable\AguaPotable\packages.config" />
+  <event action="Analyze" type="Success" name="Resources.resx" path="C:\Users\ronal\Source\Repos\AguaPotable\AguaPotable\Properties\Resources.resx" />
+  <event action="Analyze" type="Success" name="ReporteBoleta.resx" path="C:\Users\ronal\Source\Repos\AguaPotable\AguaPotable\ReporteBoleta.resx" />
+  <event action="Analyze" type="Success" name="AguaPotable" path="C:\Users\ronal\Source\Repos\AguaPotable\AguaPotable\AguaPotable.csproj" />
+  <event action="Analyze" type="Success" name="AguaPotable" path="C:\Users\ronal\Source\Repos\AguaPotable\AguaPotable.sln" />
+  <event action="Backup" type="Success" name="AguaPotable" path="C:\Users\ronal\Source\Repos\AguaPotable\AguaPotable\AguaPotable.csproj" />
+  <event action="Upgrade" type="Success" name="Assembly References" path="C:\Users\ronal\Source\Repos\AguaPotable\AguaPotable\AguaPotable.csproj" />
+  <event action="Upgrade" type="Success" name="ReporteBoleta.resx" path="C:\Users\ronal\Source\Repos\AguaPotable\AguaPotable\ReporteBoleta.resx" />
+  <event action="Upgrade" type="Success" name="AguaPotable" path="C:\Users\ronal\Source\Repos\AguaPotable\AguaPotable\AguaPotable.csproj" />
+  <event action="Upgrade" type="Success" name="AguaPotable" path="C:\Users\ronal\Source\Repos\AguaPotable\AguaPotable.sln" />
+</log>

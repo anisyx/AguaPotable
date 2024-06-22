@@ -36,5 +36,10 @@ namespace AguaPotable
                 MessageBox.Show("Error al generar la boleta: " + ex.Message);
             }
         }
+
+        private void reportViewer1_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

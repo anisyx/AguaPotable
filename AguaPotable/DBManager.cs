@@ -107,7 +107,7 @@ namespace AguaPotable
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    string query = "SELECT Mes, Anio, Monto, Mora, FechaPago, Nombre, Direccion, Canton, Telefono, (select sum(Monto) from Pagos where Pagos.ClienteID = Clientes.ClienteID) as Cuota FROM Pagos  INNER JOIN Clientes ON Pagos.ClienteID = Clientes.ClienteID WHERE CAST(FechaPago AS DATE) = CAST(GETDATE() AS DATE) and Pagos.ClienteID = @ClienteID";
+                    string query = "SELECT Mes,Anio, Monto, Mora, FechaPago, Nombre, Direccion, Canton, Telefono, (SELECT SUM(Monto) + SUM(COALESCE(Mora, 0)) FROM Pagos WHERE Pagos.ClienteID = Clientes.ClienteID and CAST(FechaPago AS DATE) = CAST(GETDATE() AS DATE) AND Pagos.ClienteID = @ClienteID) as Cuota, (SELECT SUM(Monto) FROM Pagos WHERE Pagos.ClienteID = Clientes.ClienteID and CAST(FechaPago AS DATE) = CAST(GETDATE() AS DATE) AND Pagos.ClienteID = @ClienteID) as SubTotal, (SELECT SUM(Mora) FROM Pagos WHERE Pagos.ClienteID = Clientes.ClienteID and CAST(FechaPago AS DATE) = CAST(GETDATE() AS DATE) AND Pagos.ClienteID = @ClienteID) as TotMora FROM Pagos  INNER JOIN Clientes ON Pagos.ClienteID = Clientes.ClienteID WHERE CAST(FechaPago AS DATE) = CAST(GETDATE() AS DATE) AND Pagos.ClienteID = @ClienteID";
 
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
@@ -238,5 +238,120 @@ namespace AguaPotable
                 }
             }
         }
+        public static decimal ObtenerCuotaCliente(int clienteId)
+        {
+            decimal cuota = 0;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string query = "SELECT Cuota FROM Clientes WHERE ClienteID = @ClienteID";
+                SqlCommand command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@ClienteID", clienteId);
+
+                try
+                {
+                    connection.Open();
+                    object result = command.ExecuteScalar();
+                    if (result != null)
+                    {
+                        cuota = Convert.ToDecimal(result);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Manejar excepciones según sea necesario
+                    Console.WriteLine("Error al obtener la cuota del cliente: " + ex.Message);
+                }
+            }
+
+            return cuota;
+        }
+
+        public static DataTable ObtenerClientes()
+        {
+            DataTable dt = new DataTable();
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                string query = "SELECT ClienteID, Nombre, Direccion, Canton, Telefono, Cuota FROM Clientes";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                dt.Load(reader);
+                reader.Close();
+            }
+            return dt;
+        }
+
+        // Insertar un nuevo cliente
+        public static void InsertarCliente(string nombre, string direccion, string canton, string telefono, decimal cuota)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                string query = "INSERT INTO Clientes (Nombre, Direccion, Canton, Telefono, Cuota) VALUES (@Nombre, @Direccion, @Canton, @Telefono, @Cuota)";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@Nombre", nombre);
+                cmd.Parameters.AddWithValue("@Direccion", direccion);
+                cmd.Parameters.AddWithValue("@Canton", canton);
+                cmd.Parameters.AddWithValue("@Telefono", telefono);
+                cmd.Parameters.AddWithValue("@Cuota", cuota);
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        // Actualizar un cliente existente
+       
+
+        // Eliminar un cliente
+        public static void EliminarCliente(int clienteID)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                string query = "DELETE FROM Clientes WHERE ClienteID = @ClienteID";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@ClienteID", clienteID);
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+        }
+        public static DataRow ObtenerClientePorID(int clienteID)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                string query = "SELECT * FROM Clientes WHERE ClienteID = @ClienteID";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@ClienteID", clienteID);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+
+                if (dt.Rows.Count > 0)
+                {
+                    return dt.Rows[0];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+        public static void EditarCliente(int clienteID, string nombre, string direccion, string canton, string telefono, decimal cuota)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                string query = "UPDATE Clientes SET Nombre = @Nombre, Direccion = @Direccion, Canton = @Canton, Telefono = @Telefono, Cuota = @Cuota WHERE ClienteID = @ClienteID";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@ClienteID", clienteID);
+                cmd.Parameters.AddWithValue("@Nombre", nombre);
+                cmd.Parameters.AddWithValue("@Direccion", direccion);
+                cmd.Parameters.AddWithValue("@Canton", canton);
+                cmd.Parameters.AddWithValue("@Telefono", telefono);
+                cmd.Parameters.AddWithValue("@Cuota", cuota);
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+
     }
 }
